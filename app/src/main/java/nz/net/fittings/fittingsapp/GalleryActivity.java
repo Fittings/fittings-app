@@ -2,6 +2,8 @@ package nz.net.fittings.fittingsapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -14,40 +16,67 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GalleryActivity extends AppCompatActivity {
     private static String fittingsBaseUrl = "http://10.0.2.2:8000";
-    private static String gallerysURLPath = "/gallery";
+    private static String galleryURLPath = "/gallery";
 
-    RequestQueue queue;
+    private RequestQueue restQueue;
+
+    private RecyclerView mRecyclerView;
+    private GalleryAdapter mGalleryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
-        queue = Volley.newRequestQueue(this);
+        restQueue = Volley.newRequestQueue(this);
 
-        doGetGalleries();
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_galleries);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mGalleryAdapter = new GalleryAdapter(new GalleryAdapter.GalleryClickHandler() {
+            @Override
+            public void onClick(Gallery gallery) {
+                //ZZZ TODO expand or something.
+                Log.d(this.getClass().getSimpleName(), "gallery-id: " + gallery.getId());
+            }
+        });
+        mRecyclerView.setAdapter(mGalleryAdapter);
+
+
+        loadGalleriesData();
     }
 
-    private void doGetGalleries()
+    private void loadGalleriesData()
     {
-        String allGalleriesURL = fittingsBaseUrl + gallerysURLPath + "/all";
+        //ZZZ TODO show progress bar
+        String allGalleriesURL = fittingsBaseUrl + galleryURLPath + "/all";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, allGalleriesURL, null, new GetGalleriesListener(), new ErrorListener());
-        queue.add(jsonObjectRequest);
+        restQueue.add(jsonObjectRequest);
     }
 
     private class GetGalleriesListener implements Response.Listener<JSONObject> {
 
         @Override
         public void onResponse(JSONObject response) {
-            Log.w("ZZZ Fittings", "response: " + response.toString());
+            //ZZZ TODO hide progress bar.
             try {
-                JSONArray galleries = response.getJSONArray("galleries");
-                for (int i=0; i < galleries.length(); i++) {
-                    JSONObject gallery = galleries.getJSONObject(i);
-                    Log.w("ZZZ Fittings", gallery.get("description") + " : " + gallery.get("name") + " : " + gallery.get("id"));
+                JSONArray jsonGalleries = response.getJSONArray("galleries");
+
+                List<Gallery> galleries = new ArrayList<>();
+                for (int i=0; i < jsonGalleries.length(); i++) {
+                    JSONObject gallery = jsonGalleries.getJSONObject(i);
+                    galleries.add(new Gallery(gallery.getInt("id"), gallery.getString("name"), gallery.getString("description")));
                 }
+
+                mGalleryAdapter.setGalleries(galleries);
+
             } catch (Exception e) {
+                //ZZZ TODO Display toasty error.
                 Log.w("ZZZ Fittings", "bad get");
             }
         }
@@ -57,7 +86,7 @@ public class GalleryActivity extends AppCompatActivity {
 
         @Override
         public void onErrorResponse(VolleyError error) {
-
+            //ZZZ TODO hide progress bar.
         }
     }
 
