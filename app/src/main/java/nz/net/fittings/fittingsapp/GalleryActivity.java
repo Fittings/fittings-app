@@ -1,5 +1,6 @@
 package nz.net.fittings.fittingsapp;
 
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,14 +72,16 @@ public class GalleryActivity extends AppCompatActivity {
                 List<Gallery> galleries = new ArrayList<>();
                 for (int i=0; i < jsonGalleries.length(); i++) {
                     JSONObject gallery = jsonGalleries.getJSONObject(i);
-                    galleries.add(new Gallery(gallery.getInt("id"), gallery.getString("name"), gallery.getString("description")));
+                    String previewPath = gallery.getString("preview_url");
+                    URL previewUrl = new URL(fittingsBaseUrl + previewPath);
+                    galleries.add(new Gallery(gallery.getInt("id"), gallery.getString("name"), gallery.getString("description"), previewUrl));
                 }
 
                 mGalleryAdapter.setGalleries(galleries);
 
             } catch (Exception e) {
                 //ZZZ TODO Display toasty error.
-                Log.w("ZZZ Fittings", "bad get");
+                Log.w("ZZZ Fittings", "bad get" + e);
             }
         }
     }
