@@ -15,6 +15,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue "string", "fittings_url", "https://fittings.net.nz"
+        }
+        debug {
+            resValue "string", "fittings_url", "http://10.0.2.2:8000"
         }
     }
 }
