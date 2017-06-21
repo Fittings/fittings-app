@@ -1,4 +1,4 @@
-package nz.net.fittings.fittingsapp;
+package nz.net.fittings.fittingsapp.models;
 
 
 import java.net.URL;

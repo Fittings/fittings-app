@@ -1,9 +1,8 @@
-package nz.net.fittings.fittingsapp;
+package nz.net.fittings.fittingsapp.adapters;
 
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
+
+import nz.net.fittings.fittingsapp.models.Gallery;
+import nz.net.fittings.fittingsapp.R;
+import nz.net.fittings.fittingsapp.image.FetchImageTask;
 
 
 
@@ -40,31 +39,18 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
         return new GalleryAdapterViewHolder(view);
     }
 
-    private class FetchImageTask extends AsyncTask<URL, Void, Drawable> {
-
-        @Override
-        protected Drawable doInBackground(URL... urls) {
-            try {
-                InputStream previewStream = (InputStream) urls[0].getContent();
-                return Drawable.createFromStream(previewStream, "srcName");
-            } catch (IOException e) {
-                Log.w(this.getClass().getSimpleName(), "Bad preview url: " + urls[0]);
-                return null;
-            }
-        }
-    }
 
     @Override
     public void onBindViewHolder(final GalleryAdapterViewHolder holder, int position) {
         Gallery gallery = mGalleries.get(position);
+        Log.i("FITTINGS", "Fetch: " + gallery.getPreviewImageURL().toString());
+
 
         if (gallery.getPreviewImageURL() != null)
         {
-            Log.w("ZZZ", "Fetch: " + gallery.getPreviewImageURL().toString());
             new FetchImageTask() {
                 @Override
                 protected void onPostExecute(Drawable drawable) {
-                    Log.w("ZZZ", "loaded drawable");
                     holder.mGalleryImageView.setImageDrawable(drawable);
                 }
             }.execute(gallery.getPreviewImageURL());
@@ -100,8 +86,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
 
         public GalleryAdapterViewHolder(View view) {
             super(view);
-            mGalleryTextView = (TextView) view.findViewById(R.id.tv_gallery_data);
-            mGalleryImageView = (ImageView) view.findViewById(R.id.iv_gallery_data);
+            mGalleryTextView = view.findViewById(R.id.tv_gallery_data);
+            mGalleryImageView = view.findViewById(R.id.iv_gallery_data);
 
             view.setOnClickListener(this);
         }
