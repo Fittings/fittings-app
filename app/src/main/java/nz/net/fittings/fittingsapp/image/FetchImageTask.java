@@ -14,12 +14,11 @@ public class FetchImageTask extends AsyncTask<URL, Void, Drawable> {
 
     @Override
     protected Drawable doInBackground(URL... urls) {
-        Log.i("FITTINGSZZZ", "doInBackground()" + urls);
         try {
             InputStream previewStream = (InputStream) urls[0].getContent();
             return Drawable.createFromStream(previewStream, "srcName");
         } catch (IOException e) {
-            Log.i("FITTINGSZZZ", "Bad preview url: " + urls[0]);
+            Log.e("FITTINGSZZZ", "Bad preview url: " + urls[0]);
             return null;
         }
     }

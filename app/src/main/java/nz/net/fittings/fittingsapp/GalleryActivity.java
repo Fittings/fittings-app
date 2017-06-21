@@ -43,7 +43,6 @@ public class GalleryActivity extends AppCompatActivity {
             @Override
             public void onClick(Gallery gallery) {
                 //ZZZ TODO expand or something.
-                Log.i("FITTINGSZZZ", "gallery-id: " + gallery.getId());
             }
         });
         mRecyclerView.setAdapter(mGalleryAdapter);
@@ -55,7 +54,6 @@ public class GalleryActivity extends AppCompatActivity {
     {
         //ZZZ TODO show progress bar
         String allGalleriesURL = getString(R.string.fittings_url) + getString(R.string.gallery_path) + "/all";
-        Log.i("FITTINGSZZZ", "loadGalleriesData(): " + allGalleriesURL);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, allGalleriesURL, null, new GetGalleriesListener(), new ErrorListener());
         restQueue.add(jsonObjectRequest);
     }
@@ -64,8 +62,6 @@ public class GalleryActivity extends AppCompatActivity {
 
         @Override
         public void onResponse(JSONObject response) {
-            Log.i("FITTINGSZZZ", "RESPONSE" + response.toString());
-
             //ZZZ TODO hide progress bar.
             try {
                 JSONArray jsonGalleries = response.getJSONArray("galleries");
@@ -78,12 +74,11 @@ public class GalleryActivity extends AppCompatActivity {
                     galleries.add(new Gallery(gallery.getInt("id"), gallery.getString("name"), gallery.getString("description"), previewUrl));
                 }
 
-                Log.i("FITTINGSZZZ", "Setting galleries: " + galleries);
                 mGalleryAdapter.setGalleries(galleries);
                 mGalleryAdapter.notifyDataSetChanged();
             } catch (Exception e) {
                 //ZZZ TODO Display toasty error.
-                Log.i("FITTINGSZZZ", "This error wont occur. " + e.getMessage());
+                Log.e("FITTINGSZZZ", "This error wont occur. " + e.getMessage());
             }
         }
     }
@@ -92,7 +87,7 @@ public class GalleryActivity extends AppCompatActivity {
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            Log.i("FITTINGSZZZ", "ErrorListener: " + error.getMessage());
+            Log.e("FITTINGSZZZ", "ErrorListener: " + error.getMessage());
         }
     }
 
