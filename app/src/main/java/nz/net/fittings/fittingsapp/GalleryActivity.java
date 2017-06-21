@@ -1,6 +1,5 @@
 package nz.net.fittings.fittingsapp;
 
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,10 +20,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryActivity extends AppCompatActivity {
-    private static String fittingsBaseUrl = "http://10.0.2.2:8000";
-    private static String galleryURLPath = "/gallery";
+import nz.net.fittings.fittingsapp.adapters.GalleryAdapter;
+import nz.net.fittings.fittingsapp.models.Gallery;
 
+public class GalleryActivity extends AppCompatActivity {
     private RequestQueue restQueue;
 
     private RecyclerView mRecyclerView;
@@ -44,11 +43,10 @@ public class GalleryActivity extends AppCompatActivity {
             @Override
             public void onClick(Gallery gallery) {
                 //ZZZ TODO expand or something.
-                Log.d(this.getClass().getSimpleName(), "gallery-id: " + gallery.getId());
+                Log.i("FITTINGSZZZ", "gallery-id: " + gallery.getId());
             }
         });
         mRecyclerView.setAdapter(mGalleryAdapter);
-
 
         loadGalleriesData();
     }
@@ -56,7 +54,8 @@ public class GalleryActivity extends AppCompatActivity {
     private void loadGalleriesData()
     {
         //ZZZ TODO show progress bar
-        String allGalleriesURL = fittingsBaseUrl + galleryURLPath + "/all";
+        String allGalleriesURL = getString(R.string.fittings_url) + getString(R.string.gallery_path) + "/all";
+        Log.i("FITTINGSZZZ", "loadGalleriesData(): " + allGalleriesURL);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, allGalleriesURL, null, new GetGalleriesListener(), new ErrorListener());
         restQueue.add(jsonObjectRequest);
     }
@@ -65,6 +64,8 @@ public class GalleryActivity extends AppCompatActivity {
 
         @Override
         public void onResponse(JSONObject response) {
+            Log.i("FITTINGSZZZ", "RESPONSE" + response.toString());
+
             //ZZZ TODO hide progress bar.
             try {
                 JSONArray jsonGalleries = response.getJSONArray("galleries");
@@ -73,15 +74,16 @@ public class GalleryActivity extends AppCompatActivity {
                 for (int i=0; i < jsonGalleries.length(); i++) {
                     JSONObject gallery = jsonGalleries.getJSONObject(i);
                     String previewPath = gallery.getString("preview_url");
-                    URL previewUrl = new URL(fittingsBaseUrl + previewPath);
+                    URL previewUrl = new URL(getString(R.string.fittings_url) + previewPath);
                     galleries.add(new Gallery(gallery.getInt("id"), gallery.getString("name"), gallery.getString("description"), previewUrl));
                 }
 
+                Log.i("FITTINGSZZZ", "Setting galleries: " + galleries);
                 mGalleryAdapter.setGalleries(galleries);
-
+                mGalleryAdapter.notifyDataSetChanged();
             } catch (Exception e) {
                 //ZZZ TODO Display toasty error.
-                Log.w("ZZZ Fittings", "bad get" + e);
+                Log.i("FITTINGSZZZ", "This error wont occur. " + e.getMessage());
             }
         }
     }
@@ -90,7 +92,7 @@ public class GalleryActivity extends AppCompatActivity {
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            //ZZZ TODO hide progress bar.
+            Log.i("FITTINGSZZZ", "ErrorListener: " + error.getMessage());
         }
     }
 

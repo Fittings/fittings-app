@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Fittings App</string>
+
+    <string name="gallery_path">/gallery</string>
 </resources>
