@@ -55,11 +55,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
                 }
             }.execute(gallery.getPreviewImageURL());
         }
-        holder.mGalleryTextView.setText(
-                "id: " + gallery.getId() +
-                ", name: " + gallery.getDescription() +
-                ", description: " + gallery.getDescription() +
-                ", url: " + gallery.getPreviewImageURL().toString());
+        holder.mGalleryTitleTextView.setText(gallery.getName());
+        holder.mGalleryDescriptionTextView.setText(gallery.getDescription());
     }
 
 
@@ -80,14 +77,16 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
     }
 
     public class GalleryAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView mGalleryTextView;
+        public final TextView mGalleryTitleTextView;
+        public final TextView mGalleryDescriptionTextView;
         public final ImageView mGalleryImageView;
 
 
         public GalleryAdapterViewHolder(View view) {
             super(view);
-            mGalleryTextView = view.findViewById(R.id.tv_gallery_data);
-            mGalleryImageView = view.findViewById(R.id.iv_gallery_data);
+            mGalleryTitleTextView = view.findViewById(R.id.tv_gallery_title);
+            mGalleryDescriptionTextView = view.findViewById(R.id.tv_gallery_description);
+            mGalleryImageView = view.findViewById(R.id.iv_gallery_image);
 
             view.setOnClickListener(this);
         }
