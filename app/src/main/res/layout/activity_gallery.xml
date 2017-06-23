@@ -8,15 +8,30 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_galleries"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:baselineAlignBottom="true"
+        android:clickable="true"
+        android:src="@drawable/ic_add_white_24dp"
+        android:visibility="invisible"
+        app:backgroundTint="@color/colorAccent"
+        app:elevation="4dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginBottom="0dp" />
+        app:rippleColor="@color/colorPrimary" />
 
 </android.support.constraint.ConstraintLayout>
