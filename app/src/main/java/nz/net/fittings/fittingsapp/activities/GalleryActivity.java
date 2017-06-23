@@ -1,4 +1,4 @@
-package nz.net.fittings.fittingsapp;
+package nz.net.fittings.fittingsapp.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import nz.net.fittings.fittingsapp.R;
 import nz.net.fittings.fittingsapp.adapters.GalleryAdapter;
 import nz.net.fittings.fittingsapp.models.Gallery;
 
