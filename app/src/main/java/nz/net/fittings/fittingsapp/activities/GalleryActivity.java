@@ -1,6 +1,7 @@
 package nz.net.fittings.fittingsapp.activities;
 
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -126,7 +127,9 @@ public class GalleryActivity extends AppCompatActivity {
     private class GalleryClickHandler implements GalleryAdapter.GalleryClickHandler {
         @Override
         public void onClick(Gallery gallery) {
-            Log.i(this.getClass().getSimpleName(), "GalleryClickHandler CLICK!");
+            Intent showGalleryImagesIntent = new Intent(GalleryActivity.this, GalleryImagesActivity.class);
+            showGalleryImagesIntent.putExtra(getString(R.string.gallery_intent_key), gallery.getId());
+            startActivity(showGalleryImagesIntent);
         }
     }
 

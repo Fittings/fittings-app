@@ -4,7 +4,6 @@ package nz.net.fittings.fittingsapp.adapters;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +16,13 @@ import nz.net.fittings.fittingsapp.image.FetchImageTask;
 
 
 
+/**
+ * Handles displaying of loaded {@link nz.net.fittings.fittingsapp.models.Gallery} objects
+ * in a gallery_item view.
+ */
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryAdapterViewHolder> {
     private List<Gallery> mGalleries;
     private GalleryClickHandler mClickHandler;
-
-
-    public void addGalleryClickHandler(GalleryClickHandler clickHandler) {
-        this.mClickHandler = clickHandler;
-    }
 
 
     @Override
@@ -40,9 +38,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
     @Override
     public void onBindViewHolder(final GalleryAdapterViewHolder holder, int position) {
         Gallery gallery = mGalleries.get(position);
-        Log.i("FITTINGS", "Fetch: " + gallery.getPreviewImageURL().toString());
 
-
+        //Loads the image from the URL and creates a Drawable to display the image inside of.
         if (gallery.getPreviewImageURL() != null) {
             new FetchImageTask() {
                 @Override
@@ -53,6 +50,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
         }
         holder.mGalleryTitleTextView.setText(gallery.getName());
         holder.mGalleryDescriptionTextView.setText(gallery.getDescription());
+    }
+
+
+    public void addGalleryClickHandler(GalleryClickHandler clickHandler) {
+        this.mClickHandler = clickHandler;
     }
 
 
@@ -73,19 +75,23 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
 
 
 
-    public class GalleryAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView mGalleryTitleTextView;
-        public final TextView mGalleryDescriptionTextView;
-        public final ImageView mGalleryImageView;
+    /**
+     * ViewHolder for caching loaded galleries.
+     * Manages the display for the card fields and ClickHandler.
+     */
+    class GalleryAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final TextView mGalleryTitleTextView;
+        private final TextView mGalleryDescriptionTextView;
+        private final ImageView mGalleryImageView;
 
 
-        public GalleryAdapterViewHolder(View view) {
+        GalleryAdapterViewHolder(View view) {
             super(view);
             mGalleryTitleTextView = view.findViewById(R.id.tv_gallery_title);
             mGalleryDescriptionTextView = view.findViewById(R.id.tv_gallery_description);
             mGalleryImageView = view.findViewById(R.id.iv_gallery_image);
 
-            view.setOnClickListener(this);
+            view.findViewById(R.id.cv_gallery).setOnClickListener(this);
         }
 
         public void onClick(View v) {
