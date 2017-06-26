@@ -24,8 +24,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
 
 
 
-    public GalleryAdapter(GalleryClickHandler clickHandler) {
-        mClickHandler = clickHandler;
+    public void addGalleryClickHandler(GalleryClickHandler clickHandler) {
+        this.mClickHandler = clickHandler;
     }
 
 

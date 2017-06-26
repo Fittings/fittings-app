@@ -1,10 +1,13 @@
 package nz.net.fittings.fittingsapp.activities;
 
+
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,46 +28,71 @@ import nz.net.fittings.fittingsapp.R;
 import nz.net.fittings.fittingsapp.adapters.GalleryAdapter;
 import nz.net.fittings.fittingsapp.models.Gallery;
 
-public class GalleryActivity extends AppCompatActivity {
-    private RequestQueue restQueue;
 
+
+public class GalleryActivity extends AppCompatActivity {
+    //Views
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
+
+    //Adapters
     private GalleryAdapter mGalleryAdapter;
+    private RequestQueue mRestQueue;
+
+    //Handlers
+    private GalleryClickHandler mGalleryClickHandler ;
+    private GalleryRefreshSwipeListener mGalleryRefreshSwipeListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery);
-        restQueue = Volley.newRequestQueue(this);
 
+        //Init Views
+        setContentView(R.layout.activity_gallery);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshlayout_galleries);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_galleries);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
-        mGalleryAdapter = new GalleryAdapter(new GalleryAdapter.GalleryClickHandler() {
-            @Override
-            public void onClick(Gallery gallery) {
-                //ZZZ TODO expand or something.
-            }
-        });
+
+        //Init Adapters
+        mGalleryAdapter = new GalleryAdapter();
+        mRestQueue = Volley.newRequestQueue(this);
+
+        //Init Handlers
+        mGalleryClickHandler = new GalleryClickHandler();
+        mGalleryRefreshSwipeListener = new GalleryRefreshSwipeListener();
+
+        //Add Bindings
         mRecyclerView.setAdapter(mGalleryAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setHasFixedSize(true);
+        mGalleryAdapter.addGalleryClickHandler(mGalleryClickHandler);
+        mSwipeRefreshLayout.setOnRefreshListener(mGalleryRefreshSwipeListener);
 
         loadGalleriesData();
     }
 
+
+
     private void loadGalleriesData()
     {
-        //ZZZ TODO show progress bar
+        mSwipeRefreshLayout.setRefreshing(true);
         String allGalleriesURL = getString(R.string.fittings_url) + getString(R.string.gallery_path) + "/all";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, allGalleriesURL, null, new GetGalleriesListener(), new ErrorListener());
-        restQueue.add(jsonObjectRequest);
+        mRestQueue.add(jsonObjectRequest);
     }
+
+    private void showFailedToLoadToast() {
+        String errorMessage =  MessageFormat.format(getString(R.string.gallery_failed_to_load), getString(R.string.fittings_url));
+        Toast.makeText(GalleryActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+
 
     private class GetGalleriesListener implements Response.Listener<JSONObject> {
 
         @Override
         public void onResponse(JSONObject response) {
-            //ZZZ TODO hide progress bar.
+            mSwipeRefreshLayout.setRefreshing(false);
             try {
                 JSONArray jsonGalleries = response.getJSONArray("galleries");
 
@@ -78,19 +107,38 @@ public class GalleryActivity extends AppCompatActivity {
                 mGalleryAdapter.setGalleries(galleries);
                 mGalleryAdapter.notifyDataSetChanged();
             } catch (Exception e) {
-                //ZZZ TODO Display toasty error.
-                Log.e("FITTINGSZZZ", "This error wont occur. " + e.getMessage());
+                Log.e(GalleryActivity.class.getSimpleName(), e.getMessage());
+                showFailedToLoadToast();
             }
         }
     }
+
+
+    private class GalleryClickHandler implements GalleryAdapter.GalleryClickHandler {
+        @Override
+        public void onClick(Gallery gallery) {
+            Log.i(this.getClass().getSimpleName(), "GalleryClickHandler CLICK!");
+        }
+    }
+
+
+    private class GalleryRefreshSwipeListener implements SwipeRefreshLayout.OnRefreshListener {
+
+        @Override
+        public void onRefresh() {
+            loadGalleriesData();
+        }
+    }
+
 
     private class ErrorListener implements Response.ErrorListener {
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            Log.e("FITTINGSZZZ", "ErrorListener: " + error.getMessage());
+            Log.e(GalleryActivity.class.getSimpleName(), error.getMessage());
+            mSwipeRefreshLayout.setRefreshing(false);
+            showFailedToLoadToast();
         }
     }
-
 
 }
