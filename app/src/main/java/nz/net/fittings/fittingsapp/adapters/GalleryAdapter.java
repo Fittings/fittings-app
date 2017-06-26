@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.List;
-
 import nz.net.fittings.fittingsapp.models.Gallery;
 import nz.net.fittings.fittingsapp.R;
 import nz.net.fittings.fittingsapp.image.FetchImageTask;
@@ -23,11 +22,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
     private GalleryClickHandler mClickHandler;
 
 
-
     public void addGalleryClickHandler(GalleryClickHandler clickHandler) {
         this.mClickHandler = clickHandler;
     }
-
 
 
     @Override
@@ -46,8 +43,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
         Log.i("FITTINGS", "Fetch: " + gallery.getPreviewImageURL().toString());
 
 
-        if (gallery.getPreviewImageURL() != null)
-        {
+        if (gallery.getPreviewImageURL() != null) {
             new FetchImageTask() {
                 @Override
                 protected void onPostExecute(Drawable drawable) {
@@ -71,10 +67,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
     }
 
 
-
     public interface GalleryClickHandler {
         void onClick(Gallery gallery);
     }
+
+
 
     public class GalleryAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final TextView mGalleryTitleTextView;
