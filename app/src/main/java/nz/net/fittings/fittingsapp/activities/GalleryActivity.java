@@ -8,28 +8,28 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import nz.net.fittings.fittingsapp.R;
 import nz.net.fittings.fittingsapp.adapters.GalleryAdapter;
 import nz.net.fittings.fittingsapp.models.Gallery;
 
 
 
+/**
+ * Displays gallery previews that are stored on the
+ * <a href=https://fittings.net.nz>fittings.net.nz</a> server.
+ */
 public class GalleryActivity extends AppCompatActivity {
     //Views
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -40,7 +40,7 @@ public class GalleryActivity extends AppCompatActivity {
     private RequestQueue mRestQueue;
 
     //Handlers
-    private GalleryClickHandler mGalleryClickHandler ;
+    private GalleryClickHandler mGalleryClickHandler;
     private GalleryRefreshSwipeListener mGalleryRefreshSwipeListener;
 
 
@@ -72,22 +72,27 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
 
-
-    private void loadGalleriesData()
-    {
+    /**
+     * Creates a request to <a href=https://fittings.net.nz>fittings.net.nz</a>
+     * and sets the view on callback.
+     */
+    private void loadGalleriesData() {
         mSwipeRefreshLayout.setRefreshing(true);
         String allGalleriesURL = getString(R.string.fittings_url) + getString(R.string.gallery_path) + "/all";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, allGalleriesURL, null, new GetGalleriesListener(), new ErrorListener());
         mRestQueue.add(jsonObjectRequest);
     }
 
+
     private void showFailedToLoadToast() {
-        String errorMessage =  MessageFormat.format(getString(R.string.gallery_failed_to_load), getString(R.string.fittings_url));
+        String errorMessage = MessageFormat.format(getString(R.string.gallery_failed_to_load), getString(R.string.fittings_url));
         Toast.makeText(GalleryActivity.this, errorMessage, Toast.LENGTH_LONG).show();
     }
 
 
-
+    /**
+     * Handles loaded galleries in a non-ui thread.
+     */
     private class GetGalleriesListener implements Response.Listener<JSONObject> {
 
         @Override
@@ -97,7 +102,7 @@ public class GalleryActivity extends AppCompatActivity {
                 JSONArray jsonGalleries = response.getJSONArray("galleries");
 
                 List<Gallery> galleries = new ArrayList<>();
-                for (int i=0; i < jsonGalleries.length(); i++) {
+                for (int i = 0; i < jsonGalleries.length(); i++) {
                     JSONObject gallery = jsonGalleries.getJSONObject(i);
                     String previewPath = gallery.getString("preview_url");
                     URL previewUrl = new URL(getString(R.string.fittings_url) + previewPath);
@@ -114,6 +119,10 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
 
+
+    /**
+     * Starts a new activity that displays all the images in the gallery.
+     */
     private class GalleryClickHandler implements GalleryAdapter.GalleryClickHandler {
         @Override
         public void onClick(Gallery gallery) {
@@ -122,8 +131,11 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
 
-    private class GalleryRefreshSwipeListener implements SwipeRefreshLayout.OnRefreshListener {
 
+    /**
+     * Re-loads the galleries if the user drags down while at the absolute top.
+     */
+    private class GalleryRefreshSwipeListener implements SwipeRefreshLayout.OnRefreshListener {
         @Override
         public void onRefresh() {
             loadGalleriesData();
@@ -131,8 +143,8 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
 
-    private class ErrorListener implements Response.ErrorListener {
 
+    private class ErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError error) {
             Log.e(GalleryActivity.class.getSimpleName(), error.getMessage());
