@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
 
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,9 +8,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:weightSum="1">
-
-
-    <!--Visual divider between our elements.-->
 
     <android.support.v7.widget.CardView
         android:id="@+id/cv_gallery"
@@ -21,13 +19,12 @@
         android:elevation="@dimen/card_album_elevation"
         card_view:cardCornerRadius="@dimen/card_album_radius">
 
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/iv_gallery_image"
+                android:id="@+id/iv_gallery_preview_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
@@ -39,7 +36,7 @@
                 android:id="@+id/tv_gallery_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/iv_gallery_image"
+                android:layout_below="@id/iv_gallery_preview_image"
                 android:layout_marginTop="24dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"

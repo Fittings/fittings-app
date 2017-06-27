@@ -4,4 +4,6 @@
     <string name="gallery_path">/gallery</string>
     <string name="gallery_failed_to_load">Galleries could not be loaded from {0}</string>
     <string name="gallery_intent_key">gallery_intent_key</string>
+    <string name="gallery_intent_name">gallery_intent_name</string>
+    <string name="galleries">Galleries</string>
 </resources>

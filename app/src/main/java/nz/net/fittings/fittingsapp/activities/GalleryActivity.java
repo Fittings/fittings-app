@@ -38,6 +38,8 @@ public class GalleryActivity extends AppCompatActivity {
 
     //Adapters
     private GalleryAdapter mGalleryAdapter;
+
+    //Request Queue
     private RequestQueue mRestQueue;
 
     //Handlers
@@ -56,18 +58,22 @@ public class GalleryActivity extends AppCompatActivity {
 
         //Init Adapters
         mGalleryAdapter = new GalleryAdapter();
-        mRestQueue = Volley.newRequestQueue(this);
+        mRecyclerView.setAdapter(mGalleryAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setHasFixedSize(true);
 
         //Init Handlers
         mGalleryClickHandler = new GalleryClickHandler();
         mGalleryRefreshSwipeListener = new GalleryRefreshSwipeListener();
 
-        //Add Bindings
-        mRecyclerView.setAdapter(mGalleryAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setHasFixedSize(true);
+        //Init Request Queue
+        mRestQueue = Volley.newRequestQueue(this);
+
+        //Set Bindings
         mGalleryAdapter.addGalleryClickHandler(mGalleryClickHandler);
         mSwipeRefreshLayout.setOnRefreshListener(mGalleryRefreshSwipeListener);
+
+        setTitle(getString(R.string.galleries));
 
         loadGalleriesData();
     }
@@ -129,6 +135,7 @@ public class GalleryActivity extends AppCompatActivity {
         public void onClick(Gallery gallery) {
             Intent showGalleryImagesIntent = new Intent(GalleryActivity.this, GalleryImagesActivity.class);
             showGalleryImagesIntent.putExtra(getString(R.string.gallery_intent_key), gallery.getId());
+            showGalleryImagesIntent.putExtra(getString(R.string.gallery_intent_name), gallery.getName());
             startActivity(showGalleryImagesIntent);
         }
     }

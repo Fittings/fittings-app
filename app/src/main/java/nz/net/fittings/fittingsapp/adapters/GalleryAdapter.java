@@ -89,7 +89,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
             super(view);
             mGalleryTitleTextView = view.findViewById(R.id.tv_gallery_title);
             mGalleryDescriptionTextView = view.findViewById(R.id.tv_gallery_description);
-            mGalleryImageView = view.findViewById(R.id.iv_gallery_image);
+            mGalleryImageView = view.findViewById(R.id.iv_gallery_preview_image);
 
             view.findViewById(R.id.cv_gallery).setOnClickListener(this);
         }
