@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 import nz.net.fittings.fittingsapp.models.Gallery;
 import nz.net.fittings.fittingsapp.R;
