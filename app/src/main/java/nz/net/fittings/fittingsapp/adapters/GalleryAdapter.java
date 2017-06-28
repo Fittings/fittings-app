@@ -2,17 +2,16 @@ package nz.net.fittings.fittingsapp.adapters;
 
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.bumptech.glide.Glide;
 import java.util.List;
 import nz.net.fittings.fittingsapp.models.Gallery;
 import nz.net.fittings.fittingsapp.R;
-import nz.net.fittings.fittingsapp.image.FetchImageTask;
 
 
 
@@ -40,14 +39,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
         Gallery gallery = mGalleries.get(position);
 
         //Loads the image from the URL and creates a Drawable to display the image inside of.
-        if (gallery.getPreviewImageURL() != null) {
-            new FetchImageTask() {
-                @Override
-                protected void onPostExecute(Drawable drawable) {
-                    holder.mGalleryImageView.setImageDrawable(drawable);
-                }
-            }.execute(gallery.getPreviewImageURL());
-        }
+        Glide.with(holder.mGalleryImageView.getContext())
+                .load(gallery.getPreviewImageURL())
+                .into(holder.mGalleryImageView);
+
         holder.mGalleryTitleTextView.setText(gallery.getName());
         holder.mGalleryDescriptionTextView.setText(gallery.getDescription());
     }

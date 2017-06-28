@@ -2,12 +2,15 @@ package nz.net.fittings.fittingsapp.activities;
 
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -43,7 +46,7 @@ public class GalleryImagesActivity extends AppCompatActivity {
 
     //Handlers
     private GalleryRefreshSwipeListener mGalleryRefreshSwipeListener;
-
+    private GalleryImageDataAdapter.GalleryImageClickHandler mGalleryImageClickHandler;
 
     //Data
     private Integer mGalleryId;
@@ -59,7 +62,6 @@ public class GalleryImagesActivity extends AppCompatActivity {
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshlayout_gallery_images);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_gallery_images);
 
-
         //Init adapters
         mGalleryImageAdapter = new GalleryImageDataAdapter();
         mRecyclerView.setAdapter(mGalleryImageAdapter);
@@ -71,9 +73,11 @@ public class GalleryImagesActivity extends AppCompatActivity {
 
         //Init Handlers
         mGalleryRefreshSwipeListener = new GalleryRefreshSwipeListener();
+        mGalleryImageClickHandler = new GalleryImageClickHandler();
 
         //Set Bindings
         mSwipeRefreshLayout.setOnRefreshListener(mGalleryRefreshSwipeListener);
+        mGalleryImageAdapter.setGalleryImageClickHandler(mGalleryImageClickHandler);
 
         //Handle Intent
         Intent imagesIntent = getIntent();
@@ -123,6 +127,8 @@ public class GalleryImagesActivity extends AppCompatActivity {
         }
     }
 
+
+
     private class GetGalleryImagesErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError error) {
@@ -137,6 +143,7 @@ public class GalleryImagesActivity extends AppCompatActivity {
         Toast.makeText(GalleryImagesActivity.this, errorMessage, Toast.LENGTH_LONG).show();
     }
 
+
     /**
      * Re-loads the gallery images if the user drags down while at the absolute top.
      */
@@ -145,6 +152,16 @@ public class GalleryImagesActivity extends AppCompatActivity {
         public void onRefresh() {
             loadGalleryImages();
         }
+    }
+
+
+    private class GalleryImageClickHandler implements GalleryImageDataAdapter.GalleryImageClickHandler {
+        @Override
+        public void onClick(int position) {
+
+
+        }
+
     }
 
 }

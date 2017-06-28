@@ -2,16 +2,15 @@ package nz.net.fittings.fittingsapp.adapters;
 
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import com.bumptech.glide.Glide;
 import java.util.List;
 import nz.net.fittings.fittingsapp.R;
-import nz.net.fittings.fittingsapp.image.FetchImageTask;
 import nz.net.fittings.fittingsapp.models.GalleryImage;
 
 
@@ -38,15 +37,9 @@ public class GalleryImageDataAdapter extends RecyclerView.Adapter<GalleryImageDa
     public void onBindViewHolder(final GalleryImageAdapterViewHolder holder, int position) {
         GalleryImage galleryImage = mGalleryImages.get(position);
 
-        //Loads the image from the URL and creates a Drawable to display the image inside of.
-        if (galleryImage.getURL() != null) {
-            new FetchImageTask() {
-                @Override
-                protected void onPostExecute(Drawable drawable) {
-                    holder.mGalleryImageView.setImageDrawable(drawable);
-                }
-            }.execute(galleryImage.getURL());
-        }
+        Glide.with(holder.mGalleryImageView.getContext())
+                .load(galleryImage.getURL())
+                .into(holder.mGalleryImageView);
     }
 
     public void setGalleryImages(List<GalleryImage> galleryImages) {
@@ -60,8 +53,8 @@ public class GalleryImageDataAdapter extends RecyclerView.Adapter<GalleryImageDa
     }
 
 
-    public void setGalleryImageClickHandler(Drawable image) {
-        Log.i(this.getClass().getSimpleName(), "GalleryImageClickHandler not implemented."); //ZZZ TODO What are we doing when we click on the image?
+    public void setGalleryImageClickHandler(GalleryImageClickHandler clickHandler) {
+        mGalleryImageClickHandler = clickHandler;
     }
 
 
@@ -76,16 +69,14 @@ public class GalleryImageDataAdapter extends RecyclerView.Adapter<GalleryImageDa
         }
 
         public void onClick(View v) {
-            GalleryImage galleryImage = mGalleryImages.get(getAdapterPosition());
-            Log.i(this.getClass().getSimpleName(), "on click.");
-//            mClickHandler.onClick(gallery);
+            mGalleryImageClickHandler.onClick(getAdapterPosition());
         }
     }
 
 
 
     //ZZZ TODO Something like this.
-    interface GalleryImageClickHandler {
-        void onClick(Drawable image);
+    public interface GalleryImageClickHandler {
+        void onClick(int position);
     }
 }
