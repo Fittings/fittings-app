@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -86,6 +89,26 @@ public class GalleryImagesActivity extends AppCompatActivity {
 
         loadGalleryImages();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.refresh, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                loadGalleryImages();
+                break;
+            default:
+                Log.i(getClass().getSimpleName(), "Behaviour has not been defined for option: " + item.getItemId());
+        }
+        return true;
+    }
+
 
 
     private void loadGalleryImages() {

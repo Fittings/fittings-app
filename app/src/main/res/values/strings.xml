@@ -6,4 +6,5 @@
     <string name="gallery_intent_key">gallery_intent_key</string>
     <string name="gallery_intent_name">gallery_intent_name</string>
     <string name="galleries">Galleries</string>
+    <string name="title_refresh">Refresh</string>
 </resources>

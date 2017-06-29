@@ -2,12 +2,15 @@ package nz.net.fittings.fittingsapp.activities;
 
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -76,6 +79,25 @@ public class GalleryActivity extends AppCompatActivity {
         setTitle(getString(R.string.galleries));
 
         loadGalleriesData();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.refresh, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                loadGalleriesData();
+                break;
+            default:
+                Log.i(getClass().getSimpleName(), "Behaviour has not been defined for option: " + item.getItemId());
+        }
+        return true;
     }
 
 
