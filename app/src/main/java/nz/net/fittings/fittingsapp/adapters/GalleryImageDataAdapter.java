@@ -68,14 +68,11 @@ public class GalleryImageDataAdapter extends RecyclerView.Adapter<GalleryImageDa
         }
 
         public void onClick(View v) {
-            mGalleryImageClickHandler.onClick(getAdapterPosition());
+            mGalleryImageClickHandler.onClick(mGalleryImages.get(getAdapterPosition()));
         }
     }
 
-
-
-    //ZZZ TODO Something like this.
     public interface GalleryImageClickHandler {
-        void onClick(int position);
+        void onClick(GalleryImage image);
     }
 }

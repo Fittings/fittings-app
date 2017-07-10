@@ -179,7 +179,7 @@ public class GalleryActivity extends AppCompatActivity {
     private class ErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError error) {
-            Log.e(GalleryActivity.class.getSimpleName(), error.getMessage());
+            Log.e(GalleryActivity.class.getSimpleName(), "" + error.getMessage());
             mSwipeRefreshLayout.setRefreshing(false);
             showFailedToLoadToast();
         }

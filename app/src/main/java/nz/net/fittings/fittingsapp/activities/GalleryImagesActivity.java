@@ -1,6 +1,8 @@
 package nz.net.fittings.fittingsapp.activities;
 
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import nz.net.fittings.fittingsapp.R;
 import nz.net.fittings.fittingsapp.adapters.GalleryImageDataAdapter;
+import nz.net.fittings.fittingsapp.fragments.ImageFullDialogFragment;
 import nz.net.fittings.fittingsapp.models.GalleryImage;
 
 
@@ -57,12 +60,12 @@ public class GalleryImagesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Init views
+        //Init Views
         setContentView(R.layout.activity_gallery_images);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshlayout_gallery_images);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_gallery_images);
 
-        //Init adapters
+        //Init Adapters
         mGalleryImageAdapter = new GalleryImageDataAdapter();
         mRecyclerView.setAdapter(mGalleryImageAdapter);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
@@ -81,7 +84,6 @@ public class GalleryImagesActivity extends AppCompatActivity {
 
         //Handle Intent
         Intent imagesIntent = getIntent();
-
         mGalleryId = imagesIntent.getIntExtra(getString(R.string.gallery_intent_key), -1);
         mGalleryName = imagesIntent.getStringExtra(getString(R.string.gallery_intent_name));
 
@@ -108,7 +110,6 @@ public class GalleryImagesActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
 
     private void loadGalleryImages() {
@@ -175,13 +176,28 @@ public class GalleryImagesActivity extends AppCompatActivity {
     }
 
 
+
     private class GalleryImageClickHandler implements GalleryImageDataAdapter.GalleryImageClickHandler {
         @Override
-        public void onClick(int position) {
-
-
+        public void onClick(GalleryImage image) {
+            showImageDialog(image);
         }
 
     }
+
+
+    private void showImageDialog(GalleryImage image) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        ImageFullDialogFragment dialogFragment = ImageFullDialogFragment.newInstance(this, image);
+        dialogFragment.show(ft, "dialog");
+    }
+
+
 
 }
