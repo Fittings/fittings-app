@@ -7,10 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.PhotoView;
 import nz.net.fittings.fittingsapp.R;
 import nz.net.fittings.fittingsapp.models.GalleryImage;
 
@@ -52,11 +53,13 @@ public class ImageFullDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View dialogView = inflater.inflate(R.layout.fullscreen_image, container, false);
 
-        ImageView imageView = dialogView.findViewById(R.id.fullscreen_image);
+        PhotoView imageView = dialogView.findViewById(R.id.fullscreen_image);
+        Log.i("ZOOOOMING?", "isZoomEnabled" + imageView.isZoomEnabled());
         Log.i(this.getClass().getSimpleName(), "mImage" + mImage);
         Glide.with(this)
                 .load(mImage.getURL())
                 .into(imageView);
+
 
         return dialogView;
     }
