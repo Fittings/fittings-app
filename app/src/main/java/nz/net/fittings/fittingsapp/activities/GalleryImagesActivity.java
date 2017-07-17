@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -37,23 +38,16 @@ import nz.net.fittings.fittingsapp.models.GalleryImage;
  * Loads images linked to a gallery and displays them in a grid view.
  */
 public class GalleryImagesActivity extends AppCompatActivity {
+    private static final int SELECT_PICTURE = 1;
+
     //Views
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView mRecyclerView;
 
-    //Adapters
     private GalleryImageDataAdapter mGalleryImageAdapter;
-
-    //Request Queue
     private RequestQueue mRestQueue;
-
-    //Handlers
-    private GalleryRefreshSwipeListener mGalleryRefreshSwipeListener;
-    private GalleryImageDataAdapter.GalleryImageClickHandler mGalleryImageClickHandler;
 
     //Data
     private Integer mGalleryId;
-    private String mGalleryName;
 
 
     @Override
@@ -63,31 +57,30 @@ public class GalleryImagesActivity extends AppCompatActivity {
         //Init Views
         setContentView(R.layout.activity_gallery_images);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshlayout_gallery_images);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_gallery_images);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerview_gallery_images);
 
         //Init Adapters
         mGalleryImageAdapter = new GalleryImageDataAdapter();
-        mRecyclerView.setAdapter(mGalleryImageAdapter);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
-        mRecyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(mGalleryImageAdapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false));
+        recyclerView.setHasFixedSize(true);
 
         //Init Request Queue
         mRestQueue = Volley.newRequestQueue(this);
 
-        //Init Handlers
-        mGalleryRefreshSwipeListener = new GalleryRefreshSwipeListener();
-        mGalleryImageClickHandler = new GalleryImageClickHandler();
-
         //Set Bindings
-        mSwipeRefreshLayout.setOnRefreshListener(mGalleryRefreshSwipeListener);
-        mGalleryImageAdapter.setGalleryImageClickHandler(mGalleryImageClickHandler);
+        mSwipeRefreshLayout.setOnRefreshListener(new GalleryRefreshSwipeListener());
+        mGalleryImageAdapter.setGalleryImageClickHandler(new GalleryImageClickHandler());
+        findViewById(R.id.fab_add_gallery_image).setOnClickListener(new AddGalleryImageClickHandler());
 
         //Handle Intent
         Intent imagesIntent = getIntent();
         mGalleryId = imagesIntent.getIntExtra(getString(R.string.gallery_intent_key), -1);
-        mGalleryName = imagesIntent.getStringExtra(getString(R.string.gallery_intent_name));
+        String galleryName = imagesIntent.getStringExtra(getString(R.string.gallery_intent_name));
 
-        setTitle(mGalleryName);
+        setTitle(galleryName);
+        findViewById(R.id.fab_add_gallery_image).setVisibility(View.VISIBLE); //ZZZ TODO Tie this into user authentication.
+
 
         loadGalleryImages();
     }
@@ -109,6 +102,17 @@ public class GalleryImagesActivity extends AppCompatActivity {
                 Log.i(getClass().getSimpleName(), "Behaviour has not been defined for option: " + item.getItemId());
         }
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SELECT_PICTURE:
+                Log.i(this.getClass().getSimpleName(), "onActivityResult(...): Selected a picture.");
+            default:
+                Log.e(this.getClass().getSimpleName(), "onActivityResult(...): Not implemented.");
+                break;
+        }
     }
 
 
@@ -198,6 +202,14 @@ public class GalleryImagesActivity extends AppCompatActivity {
         dialogFragment.show(ft, "dialog");
     }
 
-
+    private class AddGalleryImageClickHandler implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+        }
+    }
 
 }

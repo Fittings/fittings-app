@@ -38,10 +38,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
     public void onBindViewHolder(final GalleryAdapterViewHolder holder, int position) {
         Gallery gallery = mGalleries.get(position);
 
-        //Loads the image from the URL and creates a Drawable to display the image inside of.
-        Glide.with(holder.mGalleryImageView.getContext())
-                .load(gallery.getPreviewImageURL())
-                .into(holder.mGalleryImageView);
+        if (gallery.getPreviewImageURL() != null) {
+            //Loads the image from the URL and creates a Drawable to display the image inside of.
+            Glide.with(holder.mGalleryImageView.getContext())
+                    .load(gallery.getPreviewImageURL())
+                    .into(holder.mGalleryImageView);
+        }
+
 
         holder.mGalleryTitleTextView.setText(gallery.getName());
         holder.mGalleryDescriptionTextView.setText(gallery.getDescription());

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,19 +36,14 @@ import nz.net.fittings.fittingsapp.models.Gallery;
  * <a href=https://fittings.net.nz>fittings.net.nz</a> server.
  */
 public class GalleryActivity extends AppCompatActivity {
-    //Views
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView mRecyclerView;
 
-    //Adapters
     private GalleryAdapter mGalleryAdapter;
-
-    //Request Queue
     private RequestQueue mRestQueue;
 
-    //Handlers
-    private GalleryClickHandler mGalleryClickHandler;
-    private GalleryRefreshSwipeListener mGalleryRefreshSwipeListener;
+    //Constant
+    private static final int CREATE_GALLERY = 1;
+
 
 
     @Override
@@ -57,26 +53,24 @@ public class GalleryActivity extends AppCompatActivity {
         //Init Views
         setContentView(R.layout.activity_gallery);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshlayout_galleries);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_galleries);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerview_galleries);
 
         //Init Adapters
         mGalleryAdapter = new GalleryAdapter();
-        mRecyclerView.setAdapter(mGalleryAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setHasFixedSize(true);
-
-        //Init Handlers
-        mGalleryClickHandler = new GalleryClickHandler();
-        mGalleryRefreshSwipeListener = new GalleryRefreshSwipeListener();
+        recyclerView.setAdapter(mGalleryAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setHasFixedSize(true);
 
         //Init Request Queue
         mRestQueue = Volley.newRequestQueue(this);
 
         //Set Bindings
-        mGalleryAdapter.addGalleryClickHandler(mGalleryClickHandler);
-        mSwipeRefreshLayout.setOnRefreshListener(mGalleryRefreshSwipeListener);
+        findViewById(R.id.fab_add_gallery).setOnClickListener(new AddGalleryClickHandler());
+        mGalleryAdapter.addGalleryClickHandler(new GalleryClickHandler());
+        mSwipeRefreshLayout.setOnRefreshListener(new GalleryRefreshSwipeListener());
 
         setTitle(getString(R.string.galleries));
+        findViewById(R.id.fab_add_gallery).setVisibility(View.VISIBLE); //ZZZ TODO Tie this into user authentication.
 
         loadGalleriesData();
     }
@@ -98,6 +92,14 @@ public class GalleryActivity extends AppCompatActivity {
                 Log.i(getClass().getSimpleName(), "Behaviour has not been defined for option: " + item.getItemId());
         }
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case CREATE_GALLERY:
+
+        }
     }
 
 
@@ -133,8 +135,11 @@ public class GalleryActivity extends AppCompatActivity {
                 List<Gallery> galleries = new ArrayList<>();
                 for (int i = 0; i < jsonGalleries.length(); i++) {
                     JSONObject gallery = jsonGalleries.getJSONObject(i);
-                    String previewPath = gallery.getString("preview_url");
-                    URL previewUrl = new URL(getString(R.string.fittings_url) + previewPath);
+
+                    URL previewUrl = !gallery.isNull("preview_url")
+                            ? new URL(getString(R.string.fittings_url) + gallery.getString("preview_url"))
+                            : null;
+
                     galleries.add(new Gallery(gallery.getInt("id"), gallery.getString("name"), gallery.getString("description"), previewUrl));
                 }
 
@@ -184,5 +189,17 @@ public class GalleryActivity extends AppCompatActivity {
             showFailedToLoadToast();
         }
     }
+
+    private class AddGalleryClickHandler implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            //ZZZ TODO Create a new fragment dialog for a new Gallery {name, description}
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), CREATE_GALLERY);
+        }
+    }
+
 
 }

@@ -1,24 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
-    android:id="@+id/refreshlayout_gallery_images"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="nz.net.fittings.fittingsapp.activities.GalleryImagesActivity">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_gallery_images"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refreshlayout_gallery_images"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="nz.net.fittings.fittingsapp.activities.GalleryImagesActivity">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_gallery_images"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add_gallery_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -29,11 +37,12 @@
         android:clickable="true"
         android:src="@drawable/ic_add_white_24dp"
         android:visibility="invisible"
-        app:backgroundTint="@color/colorAccent"
         app:elevation="4dp"
         app:fabSize="normal"
+        app:layout_anchor="@id/recyclerview_gallery_images"
+        app:layout_anchorGravity="bottom|right"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:rippleColor="@color/colorPrimary" />
+        app:rippleColor="@color/colorPrimary"/>
 
-</android.support.v4.widget.SwipeRefreshLayout>
+</android.support.design.widget.CoordinatorLayout>
