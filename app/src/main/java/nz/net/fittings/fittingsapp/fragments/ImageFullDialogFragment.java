@@ -5,9 +5,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
@@ -54,8 +52,6 @@ public class ImageFullDialogFragment extends DialogFragment {
         View dialogView = inflater.inflate(R.layout.fullscreen_image, container, false);
 
         PhotoView imageView = dialogView.findViewById(R.id.fullscreen_image);
-        Log.i("ZOOOOMING?", "isZoomEnabled" + imageView.isZoomEnabled());
-        Log.i(this.getClass().getSimpleName(), "mImage" + mImage);
         Glide.with(this)
                 .load(mImage.getURL())
                 .into(imageView);

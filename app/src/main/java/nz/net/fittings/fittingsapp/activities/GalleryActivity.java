@@ -193,11 +193,8 @@ public class GalleryActivity extends AppCompatActivity {
     private class AddGalleryClickHandler implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            //ZZZ TODO Create a new fragment dialog for a new Gallery {name, description}
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), CREATE_GALLERY);
+            Intent addGalleryIntent = new Intent(GalleryActivity.this, AddGalleryActivity.class);
+            startActivity(addGalleryIntent);
         }
     }
 

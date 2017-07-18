@@ -8,4 +8,5 @@
     <string name="galleries">Galleries</string>
     <string name="title_refresh">Refresh</string>
     <string name="image_preview">image_preview</string>
+    <string name="create_gallery">Gallery Submit</string>
 </resources>
