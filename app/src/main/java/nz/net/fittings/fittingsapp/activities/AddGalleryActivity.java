@@ -32,8 +32,11 @@ public class AddGalleryActivity extends AppCompatActivity {
     private EditText mTitleEditText;
     private EditText mDescriptionEditText;
 
-    private GallerySubmitResponseListener gallerySubmitListener;
-    private GallerySubmitFailureListener gallerySubmitFailureListener;
+    private GallerySubmitResponseListener mGallerySubmitListener;
+    private GallerySubmitFailureListener mGallerySubmitFailureListener;
+
+    //view state
+    private boolean mCanSubmit;
 
 
     @Override
@@ -50,17 +53,20 @@ public class AddGalleryActivity extends AppCompatActivity {
         mRestQueue = Volley.newRequestQueue(this);
 
         //Init Handlers
-        gallerySubmitListener = new GallerySubmitResponseListener();
-        gallerySubmitFailureListener = new GallerySubmitFailureListener();
+        mGallerySubmitListener = new GallerySubmitResponseListener();
+        mGallerySubmitFailureListener = new GallerySubmitFailureListener();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mCanSubmit = true;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.upload, menu);
+
+        menu.findItem(R.id.action_upload).setEnabled(mCanSubmit);
         return true;
     }
 
@@ -71,13 +77,25 @@ public class AddGalleryActivity extends AppCompatActivity {
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
             case R.id.action_upload:
-                mRestQueue.add(createGalleryHeaderRequest());
+                submitGalleryHeader();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void setSubmitButtonEnabled(boolean enabled) {
+        mCanSubmit = enabled;
+        invalidateOptionsMenu();
+    }
+
+
+    private void submitGalleryHeader() {
+        setSubmitButtonEnabled(false);
+
+        mRestQueue.add(createGalleryHeaderRequest());
+    }
 
     private JsonObjectRequest createGalleryHeaderRequest()
     {
@@ -95,12 +113,13 @@ public class AddGalleryActivity extends AppCompatActivity {
             Toast.makeText(AddGalleryActivity.this, "Failed to create Gallery Header as JSON", Toast.LENGTH_LONG).show();
         }
 
-        return new JsonObjectRequest(Request.Method.POST, uploadUrl, galleryHeaderJSON, gallerySubmitListener, gallerySubmitFailureListener);
+        return new JsonObjectRequest(Request.Method.POST, uploadUrl, galleryHeaderJSON, mGallerySubmitListener, mGallerySubmitFailureListener);
     }
 
     private class GallerySubmitResponseListener implements Response.Listener<JSONObject> {
         @Override
         public void onResponse(JSONObject response) {
+            setSubmitButtonEnabled(true);
             Toast.makeText(AddGalleryActivity.this, "Gallery has uploaded!", Toast.LENGTH_LONG).show(); //ZZZ TODO Exit out.
         }
     }
