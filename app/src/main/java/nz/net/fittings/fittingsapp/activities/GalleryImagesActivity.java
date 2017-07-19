@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -95,13 +96,15 @@ public class GalleryImagesActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home: //Note: We could also do this by overriding onSupportNavigateUp(...)
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
             case R.id.action_refresh:
                 loadGalleryImages();
-                break;
+                return true;
             default:
-                Log.i(getClass().getSimpleName(), "Behaviour has not been defined for option: " + item.getItemId());
+                return super.onOptionsItemSelected(item);
         }
-        return true;
     }
 
     @Override

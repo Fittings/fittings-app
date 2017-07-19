@@ -87,18 +87,17 @@ public class GalleryActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 loadGalleriesData();
-                break;
+                return true;
             default:
-                Log.i(getClass().getSimpleName(), "Behaviour has not been defined for option: " + item.getItemId());
+                return super.onOptionsItemSelected(item);
         }
-        return true;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case CREATE_GALLERY:
-
+                //ZZZ TODO Do we need to actually do anything on response..?
         }
     }
 
