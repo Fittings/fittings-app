@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 import nz.net.fittings.fittingsapp.R;
 import nz.net.fittings.fittingsapp.models.Gallery;
@@ -37,12 +38,18 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
     @Override
     public void onBindViewHolder(final GalleryAdapterViewHolder holder, int position) {
         Gallery gallery = mGalleries.get(position);
+        Context context = holder.mGalleryImageView.getContext();
 
         if (gallery.getPreviewImageURL() != null) {
             //Loads the image from the URL and creates a Drawable to display the image inside of.
-            Glide.with(holder.mGalleryImageView.getContext())
+            Glide.with(context)
+                    .setDefaultRequestOptions(RequestOptions.centerCropTransform().placeholder(R.color.cardview_light_background))
+//                    .setDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.ic_favicon).fallback(R.mipmap.ic_placeholder))
                     .load(gallery.getPreviewImageURL())
                     .into(holder.mGalleryImageView);
+        }
+        else {
+            Glide.with(context).clear(holder.mGalleryImageView);
         }
 
 

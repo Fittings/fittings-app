@@ -37,6 +37,7 @@ import nz.net.fittings.fittingsapp.models.Gallery;
  */
 public class GalleryActivity extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRecyclerView;
 
     private GalleryAdapter mGalleryAdapter;
     private RequestQueue mRestQueue;
@@ -53,13 +54,13 @@ public class GalleryActivity extends AppCompatActivity {
         //Init Views
         setContentView(R.layout.activity_gallery);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshlayout_galleries);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerview_galleries);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_galleries);
 
         //Init Adapters
         mGalleryAdapter = new GalleryAdapter();
-        recyclerView.setAdapter(mGalleryAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mGalleryAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setHasFixedSize(true);
 
         //Init Request Queue
         mRestQueue = Volley.newRequestQueue(this);
