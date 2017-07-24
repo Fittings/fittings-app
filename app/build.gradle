@@ -26,9 +26,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+
 
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.android.support:recyclerview-v7:26.+'
@@ -45,4 +43,7 @@ dependencies {
 
     //PhotoView (https://github.com/chrisbanes/PhotoView)
     compile 'com.github.chrisbanes:PhotoView:2.0.0'
+
+    //Guava
+    compile 'com.google.guava:guava:22.0-android'
 }

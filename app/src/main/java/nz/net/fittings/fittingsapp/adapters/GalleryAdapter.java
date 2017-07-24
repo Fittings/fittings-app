@@ -36,7 +36,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
 
 
     @Override
+    public void onViewRecycled(GalleryAdapterViewHolder holder) {
+        super.onViewRecycled(holder);
+        Context context = holder.mGalleryImageView.getContext();
+        Glide.with(context).clear(holder.mGalleryImageView);
+    }
+
+    @Override
     public void onBindViewHolder(final GalleryAdapterViewHolder holder, int position) {
+
         Gallery gallery = mGalleries.get(position);
         Context context = holder.mGalleryImageView.getContext();
 
@@ -47,9 +55,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryA
 //                    .setDefaultRequestOptions(RequestOptions.placeholderOf(R.drawable.ic_favicon).fallback(R.mipmap.ic_placeholder))
                     .load(gallery.getPreviewImageURL())
                     .into(holder.mGalleryImageView);
-        }
-        else {
-            Glide.with(context).clear(holder.mGalleryImageView);
         }
 
 

@@ -1,6 +1,7 @@
 package nz.net.fittings.fittingsapp.activities;
 
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -16,14 +17,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.common.io.ByteStreams;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -111,10 +118,65 @@ public class GalleryImagesActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case SELECT_PICTURE:
-                Log.i(this.getClass().getSimpleName(), "onActivityResult(...): Selected a picture.");
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    Log.i(this.getClass().getSimpleName(), "onActivityResult(...): Selected a picture.");
+
+                    try {
+                        InputStream inputStream = getBaseContext().getContentResolver().openInputStream(data.getData());
+                        uploadInputStream(inputStream);
+
+                    } catch (FileNotFoundException e) {
+                        Log.e(this.getClass().getSimpleName(), "" + e.getMessage());
+                    }
+                    break;
+                }
             default:
                 Log.e(this.getClass().getSimpleName(), "onActivityResult(...): Not implemented.");
                 break;
+        }
+    }
+
+    private void uploadInputStream(final InputStream inputStream) {
+        String url = getString(R.string.fittings_url) + "/upload/gallery/"+ mGalleryId +"/image";
+        Log.i(this.getClass().getSimpleName(), "Uploading to: " + url);
+
+        mRestQueue.add(new StringRequest(Request.Method.POST,
+                url,
+                new ImageUploadListener(),
+                new ImageUploadErrListener()) {
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                byte[] data = new byte[0];
+                try {
+                    data = ByteStreams.toByteArray(inputStream);
+                } catch (IOException e) {
+                    Log.e(getClass().getSimpleName(), "" + e.getMessage());
+                }
+                return data;
+            }
+
+            public String getBodyContentType()
+            {
+                return "application/octet-stream;";
+            }
+        });
+    }
+
+    private class ImageUploadListener implements Response.Listener<String> {
+        @Override
+        public void onResponse(String response) {
+            Log.i(this.getClass().getSimpleName(), response);
+            loadGalleryImages();
+            Log.i(this.getClass().getSimpleName(), "Image was uploaded!");
+        }
+    }
+
+    private class ImageUploadErrListener implements Response.ErrorListener {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+            Log.i(this.getClass().getSimpleName(), "Image was not uploaded...");
         }
     }
 
